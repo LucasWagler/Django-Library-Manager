@@ -11,15 +11,17 @@ class AuthorAdmin(admin.ModelAdmin):
 class BookBranchCopiesInline(admin.TabularInline):
     model = BookBranchCopies
     extra = 1
+    
 
 class BookAdmin(admin.ModelAdmin):
     list_display = ('title', 'author', 'price')
-    search_fields = ['title', 'author__name']
+    list_filter = ['price']
+    search_fields = ['title', 'author__name', 'author__country']
     inlines = [BookBranchCopiesInline]
 
 class BranchAdmin(admin.ModelAdmin):
     list_display = ['name', 'city', 'phone']
-    search_fields = ['name', 'city']
+    search_fields = ['name', 'city', 'phone']
 
 class DepartmentAdmin(admin.ModelAdmin):
     list_display = ['name', 'budget']
@@ -36,7 +38,7 @@ admin.site.register(Branch, BranchAdmin)
 admin.site.register(Department, DepartmentAdmin)
 admin.site.register(Employee, EmployeeAdmin)
 
-admin.AdminSite.site_header = 'Dunder Mifflin Bookstore'
-admin.AdminSite.site_title = 'Dunder Mifflin Bookstore'
+admin.AdminSite.site_header = 'Aesop Bookstore'
+admin.AdminSite.site_title = 'Aesop Bookstore'
 admin.AdminSite.site_url = '/admin'
 admin.AdminSite.index_title = 'Bookstore Administration'

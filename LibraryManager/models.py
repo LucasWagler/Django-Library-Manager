@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 class Author(models.Model):
 
     name = models.CharField(max_length=50, default="Unknown")
-    country = models.CharField(max_length=50, default="Unknown", blank=True)
+    country = models.CharField(max_length=50, default="Unknown", blank=True, null=True)
 
     # class Meta:
     #     verbose_name = _("author")
@@ -21,9 +21,9 @@ class Author(models.Model):
 class Book(models.Model):
 
     title = models.CharField(max_length=100)
-    author = models.ForeignKey("LibraryManager.Author", on_delete=models.CASCADE)
-    num_pages = models.IntegerField()
-    price = models.FloatField(default=12.99)
+    author = models.ForeignKey("LibraryManager.Author", on_delete=models.CASCADE, null=True, blank=True)
+    num_pages = models.IntegerField(null=True, blank=True)
+    price = models.FloatField(default=12.99, null=True, blank=True)
 
 
 
@@ -55,8 +55,12 @@ class Book(models.Model):
 class Branch(models.Model):
 
     name = models.CharField(max_length=50)
-    city = models.CharField(max_length=50)
-    phone = PhoneNumberField()
+    address_1 = models.CharField(max_length=100, null=True, blank=True)
+    address_2 = models.CharField(max_length=100, null=True, blank=True)
+    city = models.CharField(max_length=50, null=True, blank=True)
+    state = models.CharField(max_length=2, null=True, blank=True, default='NY')
+    postal_code = models.IntegerField(default=44444, null=True, blank=True)
+    phone = PhoneNumberField(null=True, blank=True)
 
     class Meta:
         verbose_name = "branch"
@@ -73,7 +77,7 @@ class BookBranchCopies(models.Model):
 
     book = models.ForeignKey("LibraryManager.Book", on_delete=models.CASCADE)
     branch = models.ForeignKey("LibraryManager.Branch", on_delete=models.CASCADE)
-    number_of_copies = models.IntegerField()
+    number_of_copies = models.IntegerField(null=True, blank=True)
 
     class Meta:
         verbose_name = "Branch's Copies"
@@ -105,17 +109,17 @@ class Employee(models.Model):
     # name = models.CharField(_("Name"), max_length=50)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     # email = models.EmailField(max_length=254)
-    phone = PhoneNumberField(null=True)
-    salary = models.FloatField()
-    branch = models.ForeignKey("LibraryManager.Branch", null=True, on_delete=models.SET_NULL)
-    department = models.ForeignKey("LibraryManager.Department", null=True, on_delete=models.SET_NULL)
+    phone = PhoneNumberField(null=True, blank=True)
+    salary = models.FloatField(null=True, blank=True)
+    branch = models.ForeignKey("LibraryManager.Branch", null=True, blank=True, on_delete=models.SET_NULL)
+    department = models.ForeignKey("LibraryManager.Department", null=True, blank=True, on_delete=models.SET_NULL)
 
     # class Meta:
     #     verbose_name = _("employee")
     #     verbose_name_plural = _("employees")
 
     def __str__(self):
-        return self.user.first_name
+        return self.user.first_name + self.user.last_name
 
     # def get_absolute_url(self):
     #     return reverse("employee_detail", kwargs={"pk": self.pk})
