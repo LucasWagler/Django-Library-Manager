@@ -23,6 +23,7 @@ class Book(models.Model):
     title = models.CharField(max_length=100)
     author = models.ForeignKey("LibraryManager.Author", on_delete=models.CASCADE)
     num_pages = models.IntegerField()
+    price = models.FloatField(default=12.99)
 
 
 
@@ -79,7 +80,7 @@ class BookBranchCopies(models.Model):
         verbose_name_plural = "Branch Copies"
 
     def __str__(self):
-        return self.book + ', ' + self.branch + ', ' + self.number_of_copies
+        return self.book.title + ', ' + self.branch.name + ', ' + str(self.number_of_copies)
 
     # def get_absolute_url(self):
     #     return reverse("bookcopies_detail", kwargs={"pk": self.pk})
@@ -103,8 +104,8 @@ class Employee(models.Model):
 
     # name = models.CharField(_("Name"), max_length=50)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    email = models.EmailField(max_length=254)
-    phone = PhoneNumberField()
+    # email = models.EmailField(max_length=254)
+    phone = PhoneNumberField(null=True)
     salary = models.FloatField()
     branch = models.ForeignKey("LibraryManager.Branch", null=True, on_delete=models.SET_NULL)
     department = models.ForeignKey("LibraryManager.Department", null=True, on_delete=models.SET_NULL)
@@ -114,7 +115,7 @@ class Employee(models.Model):
     #     verbose_name_plural = _("employees")
 
     def __str__(self):
-        return self.user.name
+        return self.user.first_name
 
     # def get_absolute_url(self):
     #     return reverse("employee_detail", kwargs={"pk": self.pk})
