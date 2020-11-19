@@ -1,6 +1,6 @@
 from django.db import models
-
-# Create your models here.
+from phonenumber_field.modelfields import PhoneNumberField
+from django.contrib.auth.models import User
 
 
 class Author(models.Model):
@@ -13,7 +13,7 @@ class Author(models.Model):
     #     verbose_name_plural = _("authors")
 
     def __str__(self):
-        return self.name
+        return self.name + ' [' + str(self.pk) + ']'
 
     # def get_absolute_url(self):
     #     return reverse("author_detail", kwargs={"pk": self.pk})
@@ -51,69 +51,70 @@ class Book(models.Model):
 #     def get_absolute_url(self):
 #         return reverse("bookauthor_detail", kwargs={"pk": self.pk})
 
-# class Branch(models.Model):
+class Branch(models.Model):
 
-#     name = models.CharField(_("Name"), max_length=50)
-#     city = models.CharField(_("City"), max_length=50)
+    name = models.CharField(max_length=50)
+    city = models.CharField(max_length=50)
+    phone = PhoneNumberField()
 
-#     class Meta:
-#         verbose_name = _("branch")
-#         verbose_name_plural = _("branchs")
+    class Meta:
+        verbose_name = "branch"
+        verbose_name_plural = "branches"
 
-#     def __str__(self):
-#         return self.name
+    def __str__(self):
+        return self.name
 
-#     def get_absolute_url(self):
-#         return reverse("branch_detail", kwargs={"pk": self.pk})
-
-
-# class BookBranchCopies(models.Model):
-
-#     book = models.ForeignKey("LibraryManager.Book", verbose_name=_(""), on_delete=models.CASCADE)
-#     branch = models.ForeignKey("LibraryManager.Branch", verbose_name=_(""), on_delete=models.CASCADE)
-#     num_copies = models.IntegerField(_("Number of Copies"))
-
-#     class Meta:
-#         verbose_name = _("bookcopies")
-#         verbose_name_plural = _("bookcopiess")
-
-#     def __str__(self):
-#         return self.name
-
-#     def get_absolute_url(self):
-#         return reverse("bookcopies_detail", kwargs={"pk": self.pk})
+    # def get_absolute_url(self):
+    #     return reverse("branch_detail", kwargs={"pk": self.pk})
 
 
-# class Employee(models.Model):
+class BookBranchCopies(models.Model):
 
-#     name = models.CharField(_("Name"), max_length=50)
-#     email = models.EmailField(_("Email"), max_length=254)
-#     phone = models.PhoneNumberField(_("Phone Number"))
-#     salary = models.FloatField(_("Salary"))
-#     branch = models.ForeignKey("LibraryManager.Branch", verbose_name=_(""), on_delete=models.SET_NULL)
-#     department = models.ForeignKey("LibraryManager.Department", verbose_name=_(""), on_delete=models.SET_NULL)
+    book = models.ForeignKey("LibraryManager.Book", on_delete=models.CASCADE)
+    branch = models.ForeignKey("LibraryManager.Branch", on_delete=models.CASCADE)
+    number_of_copies = models.IntegerField()
 
-#     class Meta:
-#         verbose_name = _("employee")
-#         verbose_name_plural = _("employees")
+    class Meta:
+        verbose_name = "Branch's Copies"
+        verbose_name_plural = "Branch Copies"
 
-#     def __str__(self):
-#         return self.name
+    def __str__(self):
+        return self.book + ', ' + self.branch + ', ' + self.number_of_copies
 
-#     def get_absolute_url(self):
-#         return reverse("employee_detail", kwargs={"pk": self.pk})
+    # def get_absolute_url(self):
+    #     return reverse("bookcopies_detail", kwargs={"pk": self.pk})
 
-# class Department(models.Model):
+class Department(models.Model):
 
-#     name = models.CharField(_("Name"), max_length=50)
-#     budget = models.FloatField(_("Budget"))
+    name = models.CharField(max_length=50)
+    budget = models.FloatField()
 
-#     class Meta:
-#         verbose_name = _("department")
-#         verbose_name_plural = _("departments")
+    # class Meta:
+    #     verbose_name = _("department")
+    #     verbose_name_plural = _("departments")
 
-#     def __str__(self):
-#         return self.name
+    def __str__(self):
+        return self.name
 
-#     def get_absolute_url(self):
-#         return reverse("department_detail", kwargs={"pk": self.pk})
+    # def get_absolute_url(self):
+    #     return reverse("department_detail", kwargs={"pk": self.pk})
+
+class Employee(models.Model):
+
+    # name = models.CharField(_("Name"), max_length=50)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    email = models.EmailField(max_length=254)
+    phone = PhoneNumberField()
+    salary = models.FloatField()
+    branch = models.ForeignKey("LibraryManager.Branch", null=True, on_delete=models.SET_NULL)
+    department = models.ForeignKey("LibraryManager.Department", null=True, on_delete=models.SET_NULL)
+
+    # class Meta:
+    #     verbose_name = _("employee")
+    #     verbose_name_plural = _("employees")
+
+    def __str__(self):
+        return self.user.name
+
+    # def get_absolute_url(self):
+    #     return reverse("employee_detail", kwargs={"pk": self.pk})
