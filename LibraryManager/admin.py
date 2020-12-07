@@ -18,6 +18,8 @@ class BookAdmin(admin.ModelAdmin):
     list_filter = ['price']
     search_fields = ['title', 'author__name', 'author__country']
     inlines = [BookBranchCopiesInline]
+    # fields = ['image_tag']
+    # readonly_fields = ['image_tag']
 
 class BranchAdmin(admin.ModelAdmin):
     list_display = ['name', 'city', 'phone']
