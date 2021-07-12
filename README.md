@@ -1,5 +1,7 @@
 # SSDB Project
 
+**Be sure to change the `SECRET_KEY` in `SSDB_Project/settings.py` and create a new database if using for non-demo purposes!**
+
 Testing Logins
 
 - admin, django
